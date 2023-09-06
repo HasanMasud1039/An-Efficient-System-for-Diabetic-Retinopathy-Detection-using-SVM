@@ -53,7 +53,7 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 clc
-[filename, pathname] = uigetfile({'*.*';'*.bmp';'*.png';'*.gif'}, 'Pick a Leaf Image File');
+[filename, pathname] = uigetfile({'*.*';'*.bmp';'*.png';'*.gif'}, 'Pick a Fundus Image File');
 I = imread([pathname,filename]);
 I = imresize(I,[512,512]);
 I2 = imresize(I,[300,400]);
@@ -86,7 +86,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 I6 = handles.ImgData2;
 I = I6;
 %% Extract Features
-[feat_disease seg_img Affect] =  EvaluateFeatures(I);
+[feat_disease, seg_img, Affect] =  EvaluateFeatures(I);
 I7 = imresize(seg_img,[300,400]);
 axes(handles.axes3);
 imshow(I7);title('Segmented Image');
@@ -146,11 +146,11 @@ function pushbutton5_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %% Evaluate Accuracy
-load('Brown_Feat.mat');
-load('Halo_Feat.mat');
+load('Severe_Feat.mat');
+load('Mild_Feat.mat');
 load('Healthy_Feat.mat');
 
-Train_Feat = [Brown_Feat;Halo_Feat;Healthy_Feat];
+Train_Feat = [Severe_Feat; Mild_Feat; Healthy_Feat];
 Train_Label = [ zeros(1,30) ones(1,35) 2*ones(1,35)];
 Accuracy_Percent= zeros(500,1);
 itr = 500;
@@ -203,11 +203,11 @@ function pushbutton6_Callback(hObject, eventdata, handles)
 test = handles.ImgData3;
 Affect = handles.ImgData4;
 % Load All The Features
-load('Brown_Feat.mat');
-load('Halo_Feat.mat');
+load('Severe_Feat.mat');
+load('Mild_Feat.mat');
 load('Healthy_Feat.mat');
 
-Train_Feat = [Brown_Feat;Halo_Feat;Healthy_Feat];
+Train_Feat = [Severe_Feat; Mild_Feat; Healthy_Feat];
 Train_Label = [ zeros(1,30) ones(1,35) 2*ones(1,35)];
 % Put the test features into variable 'test'
 result = multisvm(Train_Feat,Train_Label,test);
@@ -488,6 +488,29 @@ function edit19_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function edit19_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to edit19 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit20_Callback(hObject, eventdata, handles)
+% hObject    handle to edit20 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit20 as text
+%        str2double(get(hObject,'String')) returns contents of edit20 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit20_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit20 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

@@ -1,6 +1,6 @@
 %Function to call and evaluate features
-function [feat_disease seg_img Affect] =  EvaluateFeatures(I)
-%figure, imshow(I); title('Query Leaf Image');
+function [feat_disease, seg_img, Affect] =  EvaluateFeatures(I)
+%figure, imshow(I); title('Query Fundus Image');
 % Enhance Contrast
 %I = imadjust(I,stretchlim(I));
 %figure, imshow(I);title('Contrast Enhanced');
@@ -27,7 +27,7 @@ nrows = size(ab,1);
 ncols = size(ab,2);
 ab = reshape(ab,nrows*ncols,2);
 nColors = 3;
-[cluster_idx cluster_center] = kmeans(ab,nColors,'distance','sqEuclidean', ...
+[cluster_idx, cluster_center] = kmeans(ab,nColors,'distance','sqEuclidean', ...
                                       'Replicates',3);
 %[cluster_idx cluster_center] = kmeans(ab,nColors,'distance','sqEuclidean','Replicates',3);
 % Label every pixel in tha image using results from K means
@@ -63,7 +63,7 @@ if ndims(seg_img) == 3
 end
 %figure, imshow(img); title('Gray Scale Image');
 % Evaluate the disease affected area
-black = im2bw(seg_img,graythresh(seg_img));
+black = im2bw(seg_img, graythresh(seg_img));
 %figure, imshow(black);title('Black & White Image');
 m = size(seg_img,1);
 n = size(seg_img,2);
@@ -75,9 +75,9 @@ A1 = diseasedata.Area;
 sprintf('Area of the disease affected region is : %g%',A1);
 I_black = im2bw(I,graythresh(I));
 kk = bwconncomp(I,6);
-leafdata = regionprops(kk,'basic');
-A2 = leafdata.Area;
-sprintf(' Total leaf area is : %g%',A2);
+fundusdata = regionprops(kk,'basic');
+A2 = fundusdata.Area;
+sprintf(' Total fundus area is : %g%',A2);
 
 Affected_Area = min(A1/A2,A2/A1);
 if Affected_Area < 0.1
